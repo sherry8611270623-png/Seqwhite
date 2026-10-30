@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#FAF9F7">
+    <title>SEQWHITE.STUDIO｜美甲極簡記帳系統</title>
+    <style>
+        :root {
+            --bg-color: #FAF9F7;
+            --card-bg: #FFFFFF;
+            --text-main: #232220;
+            --text-muted: #8E8A85;
+            --text-light: #B5B0A8;
+            --border-color: #EFECE6;
+            --border-hover: #D8D3CA;
+            --accent-dark: #201F1E;
+            --accent-soft: #F0EDE8;
+            --income-color: #2E6B56;
+            --income-bg: #EEF6F2;
+            --expense-color: #A95349;
+            --expense-bg: #FAF0EF;
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --shadow-subtle: 0 4px 20px rgba(35, 34, 32, 0.04);
+            --transition-fast: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding-bottom: 40px;
+            min-height: 100vh;
+        }
+
+        /* 頂部 Sticky 導覽列 */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: rgba(250, 249, 247, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 16px 12px;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .brand-title {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 3.5px;
+            color: var(--accent-dark);
+            text-transform: uppercase;
+        }
+
+        .brand-sub {
+            font-size: 9px;
+            letter-spacing: 2.5px;
+            color: var(--text-muted);
+            margin-top: 2px;
+            text-transform: uppercase;
+        }
+
+        .quick-toolbar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .toolbar-btn {
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-muted);
+            padding: 10px 0;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            text-align: center;
+        }
+
+        .toolbar-btn.active {
+            background: var(--accent-dark);
+            color: #FFFFFF;
+            border-color: var(--accent-dark);
+            box-shadow: 0 3px 10px rgba(32, 31, 30, 0.15);
+        }
+
+        /* 主容器 */
+        main {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 16px 16px 40px;
+        }
+
+        /* 通用卡片與模組 */
+        .panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .row-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: var(--accent-dark);
+        }
+
+        /* 按鈕風格 */
+        .btn-primary {
+            background: var(--accent-dark);
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 18px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        .btn-secondary {
+            background: #FFFFFF;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: #FFFFFF;
+            color: var(--text-main);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-size: 14px;
+        }
+
+        .btn-icon:active {
+            background: var(--accent-soft);
+        }
+
+        /* 月曆樣式 */
+        .month-header {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: var(--accent-dark);
+        }
+
+        .calendar-week {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            color: var(--text-light);
+            font-size: 12px;
+            font-weight: 500;
+            margin: 20px 0 10px;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .day-cell {
+            position: relative;
+            aspect-ratio: 1;
+            border: none;
+            background: transparent;
+            border-radius: 50%;
+            color: var(--text-main);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-fast);
+        }
+
+        .day-cell.today:not(.selected) {
+            border: 1px solid var(--text-muted);
+        }
+
+        .day-cell.selected {
+            background: var(--accent-dark);
+            color: #FFFFFF;
+        }
+
+        .day-cell .dot {
+            position: absolute;
+            bottom: 4px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #B9AAA0;
+        }
+
+        .day-cell.selected .dot {
+            background: #FFFFFF;
+        }
+
+        .day-cell:disabled {
+            visibility: hidden;
+        }
+
+        /* 收支統計卡 */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .metric-card {
+            background: var(--bg-color);
+            padding: 12px 8px;
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .metric-card small {
+            display: block;
+            color: var(--text-muted);
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        .metric-card strong {
+            font-size: 14px;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .text-income { color: var(--income-color); }
+        .text-expense { color: var(--expense-color); }
+
+        /* 紀錄條目 */
+        .entry-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-color);
+            gap: 10px;
+        }
+
+        .entry-item:last-child {
+            border-bottom: none;
+        }
+
+        .entry-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .entry-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 4px;
+        }
+
+        .tag {
+            background: var(--accent-soft);
+            color: var(--text-main);
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .entry-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .entry-amount {
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .entry-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            padding: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: var(--transition-fast);
+        }
+
+        .action-btn:hover {
+            opacity: 1;
+        }
+
+        /* 彈出彈窗 Modal / Bottom Sheet */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            background: rgba(20, 19, 18, 0.4);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-sheet {
+            background: var(--bg-color);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            border-radius: 24px 24px 0 0;
+            padding: 24px 20px 32px;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-overlay.active .modal-sheet {
+            transform: translateY(0);
+        }
+
+        /* 表單元件 */
+        .form-group {
+            margin-top: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control, select, textarea {
+            width: 100%;
+            border: 1px solid var(--border-color);
+            background: #FFFFFF;
+            border-radius: var(--radius-md);
+            padding: 12px;
+            font-size: 14px;
+            color: var(--text-main);
+            outline: none;
+            transition: var(--transition-fast);
+        }
+
+        .form-control:focus, select:focus, textarea:focus {
+            border-color: var(--accent-dark);
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* 複選按鈕區 (Chip Checkboxes) */
+        .chips-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip-checkbox {
+            position: relative;
+        }
+
+        .chip-checkbox input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .chip-label {
+            display: inline-block;
+            padding: 8px 14px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            user-select: none;
+        }
+
+        .chip-checkbox input:checked + .chip-label {
+            background: var(--accent-dark);
+            color: #FFFFFF;
+            border-color: var(--accent-dark);
+        }
+
+        .sheet-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .sheet-actions > * {
+            flex: 1;
+        }
+
+        /* 長條圖分析 */
+        .bar-item {
+            display: grid;
+            grid-template-columns: 80px 1fr 90px;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            margin: 12px 0;
+        }
+
+        .bar-track {
+            background: var(--accent-soft);
+            border-radius: 8px;
+            height: 10px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--accent-dark);
+            border-radius: 8px;
+            transition: width 0.4s ease;
+        }
+
+        .bar-fill.expense-fill {
+            background: var(--text-muted);
+        }
+
+        /* 搜尋與過濾 */
+        .controls-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .controls-row > * {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 32px 16px;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (min-width: 600px) {
+            .modal-overlay {
+                align-items: center;
+            }
+            .modal-sheet {
+                border-radius: var(--radius-lg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sticky 頂部快選列 -->
+    <header>
+        <div class="brand-header">
+            <div class="brand-title">SEQWHITE.STUDIO</div>
+            <div class="brand-sub">Nail Art Accounting</div>
+        </div>
+        <nav class="quick-toolbar">
+            <button class="toolbar-btn active" data-page="calendar">月曆</button>
+            <button class="toolbar-btn" data-page="records">總紀錄</button>
+            <button class="toolbar-btn" data-page="reports">報表</button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- 頁面 1：月曆 (預設) -->
+        <section id="page-calendar">
+            <div class="panel">
+                <div class="row-between">
+                    <button class="btn-icon" id="btnPrevMonth">‹</button>
+                    <div class="month-header" id="monthTitle"></div>
+                    <button class="btn-icon" id="btnNextMonth">›</button>
+                </div>
+                <div class="calendar-week">
+                    <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+                </div>
+                <div class="calendar-days" id="calendarDays"></div>
+            </div>
+
+            <div class="panel">
+                <div class="row-between">
+                    <div class="section-title" id="selectedDateTitle"></div>
+                    <button class="btn-primary" id="btnAddCalendar">＋ 新增紀錄</button>
+                </div>
+                <div id="dayEntries" style="margin-top: 12px;"></div>
+                <div id="daySummary"></div>
+            </div>
+        </section>
+
+        <!-- 頁面 2：總紀錄 -->
+        <section id="page-records" class="hidden">
+            <div class="panel">
+                <div class="row-between" style="margin-bottom: 12px;">
+                    <div class="section-title">歷史收支總紀錄</div>
+                    <button class="btn-primary" id="btnAddRecords">＋ 新增紀錄</button>
+                </div>
+
+                <div class="controls-row">
+                    <input type="month" id="filterMonth" class="form-control">
+                    <select id="filterType" class="form-control">
+                        <option value="all">全部類型</option>
+                        <option value="income">收入</option>
+                        <option value="expense">支出</option>
+                    </select>
+                </div>
+                <input type="text" id="filterSearch" class="form-control" placeholder="搜尋服務項目、備註、付款方式">
+
+                <div id="recordsSummary"></div>
+                <div id="allEntriesList" style="margin-top: 12px;"></div>
+            </div>
+
+            <div class="panel">
+                <div class="section-title" style="margin-bottom: 8px;">資料管理與備份</div>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
+                    紀錄已自動儲存於本機瀏覽器。若需更換手機或備份，請使用下方 JSON 匯出/匯入功能。
+                </p>
+                <div class="controls-row">
+                    <button class="btn-secondary" id="btnExportJSON">匯出 JSON 備份</button>
+                    <button class="btn-secondary" id="btnImportJSON">匯入 JSON 備份</button>
+                    <input type="file" id="importFileInput" accept="application/json,.json" class="hidden">
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁面 3：報表 -->
+        <section id="page-reports" class="hidden">
+            <div class="panel">
+                <div class="row-between">
+                    <div class="section-title">月度營運分析</div>
+                    <input type="month" id="reportMonth" class="form-control" style="max-width: 160px;">
+                </div>
+                <div id="reportSummary"></div>
+            </div>
+
+            <div class="panel">
+                <div class="section-title" style="margin-bottom: 8px;">收支比例</div>
+                <div id="reportBarRatio"></div>
+            </div>
+
+            <div class="panel">
+                <div class="section-title" style="margin-bottom: 8px;">收入項目排行榜</div>
+                <div id="incomeCategoryBars"></div>
+            </div>
+
+            <div class="panel">
+                <div class="section-title" style="margin-bottom: 8px;">支出項目排行榜</div>
+                <div id="expenseCategoryBars"></div>
+            </div>
+
+            <div class="panel">
+                <div class="section-title" style="margin-bottom: 8px;">近六個月營運趨勢</div>
+                <div id="trendBars"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 彈出式新增/編輯表單 Modal -->
+    <div class="modal-overlay" id="entryModal">
+        <div class="modal-sheet">
+            <div class="row-between">
+                <div class="section-title" id="formModalTitle">新增收支紀錄</div>
+                <button class="btn-icon" id="btnCloseModal">✕</button>
+            </div>
+
+            <form id="entryForm">
+                <input type="hidden" id="editEntryId">
+
+                <div class="form-grid-2 form-group">
+                    <div>
+                        <label class="form-label">收支類型</label>
+                        <select id="entryType" class="form-control">
+                            <option value="income">收入 (+)</option>
+                            <option value="expense">支出 (-)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">日期</label>
+                        <input type="date" id="entryDate" class="form-control" required>
+                    </div>
+                </div>
+
+                <!-- 收入項目複選區 -->
+                <div class="form-group" id="incomeServicesGroup">
+                    <label class="form-label">美甲服務項目（可多選）</label>
+                    <div class="chips-grid" id="incomeChipsContainer"></div>
+                </div>
+
+                <!-- 支出項目單選區 -->
+                <div class="form-group hidden" id="expenseCategoryGroup">
+                    <label class="form-label">支出類別</label>
+                    <select id="expenseCategorySelect" class="form-control"></select>
+                </div>
+
+                <div class="form-grid-2 form-group">
+                    <div>
+                        <label class="form-label">總金額 (NT$)</label>
+                        <input type="number" id="entryAmount" class="form-control" min="0" max="9999999" step="1" placeholder="例如: 1500" required>
+                    </div>
+                    <div>
+                        <label class="form-label">付款方式</label>
+                        <select id="entryPayment" class="form-control">
+                            <option value="現金">現金</option>
+                            <option value="轉帳">轉帳</option>
+                            <option value="LINE Pay">LINE Pay</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">備註（選填）</label>
+                    <textarea id="entryNote" rows="2" maxlength="300" placeholder="顧客名稱、指定款式或其他細節"></textarea>
+                </div>
+
+                <div class="sheet-actions">
+                    <button type="button" class="btn-secondary" id="btnCancelModal">取消</button>
+                    <button type="submit" class="btn-primary">儲存紀錄</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    (() => {
+        'use strict';
+
+        const STORAGE_KEY = 'SEQWHITE_STUDIO_ACCOUNTING_DATA_V2';
+
+        // 服務與分類選單項目 (不帶價格)
+        const INCOME_SERVICES = [
+            '純色', '跳色', '漸層', '貓眼', '法式', '鏡面', 
+            '客製款', '延甲', '卸甲', '穿戴甲', '夜間服務+500', '補甲', '其他收入'
+        ];
+
+        const EXPENSE_CATEGORIES = [
+            '材料耗材', '房租', '水電', '廣告行銷', '設備工具', '運費', '手續費', '其他支出'
+        ];
+
+        // 深度 DOM 選擇器簡化
+        const $ = id => document.getElementById(id);
+
+        // 工具函式
+        const getTodayStr = () => {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        };
+
+        const formatMoney = num => 'NT$ ' + Number(num || 0).toLocaleString('zh-TW');
+        const getMonthStr = dateStr => dateStr.slice(0, 7);
+        const escapeHtml = str => String(str ?? '').replace(/[&<>"']/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+
+        // 應用程式狀態
+        let records = [];
+        let selectedDate = getTodayStr();
+        let viewMonth = getMonthStr(selectedDate);
+        let activePage = 'calendar';
+
+        // 載入資料
+        function loadRecords() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed)) records = parsed.filter(isValidRecord);
+                }
+            } catch (e) {
+                alert('無法讀取本機紀錄，請確認瀏覽器隱私設定。');
+            }
+        }
+
+        function isValidRecord(r) {
+            return r && typeof r.id === 'string' &&
+                /^\d{4}-\d{2}-\d{2}$/.test(r.date) &&
+                ['income', 'expense'].includes(r.type) &&
+                Array.isArray(r.items) &&
+                Number.isFinite(Number(r.amount)) && Number(r.amount) >= 0;
+        }
+
+        function saveRecords() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+                return true;
+            } catch (e) {
+                alert('儲存失敗：本機儲存空間不足。');
+                return false;
+            }
+        }
+
+        // 初始化選單 DOM
+        function initFormOptions() {
+            // 生成收入 Chips (複選)
+            const chipsContainer = $('incomeChipsContainer');
+            chipsContainer.innerHTML = INCOME_SERVICES.map((service, idx) => `
+                <div class="chip-checkbox">
+                    <input type="checkbox" id="chip_${idx}" value="${escapeHtml(service)}">
+                    <label for="chip_${idx}" class="chip-label">${escapeHtml(service)}</label>
+                </div>
+            `).join('');
+
+            // 生成支出 Select (單選)
+            const expenseSelect = $('expenseCategorySelect');
+            expenseSelect.innerHTML = EXPENSE_CATEGORIES.map(cat => `
+                <option value="${escapeHtml(cat)}">${escapeHtml(cat)}</option>
+            `).join('');
+        }
+
+        // 計算統計數值
+        function calculateSummary(dataList) {
+            return dataList.reduce((acc, r) => {
+                const amt = Number(r.amount) || 0;
+                if (r.type === 'income') acc.income += amt;
+                else acc.expense += amt;
+                return acc;
+            }, { income: 0, expense: 0 });
+        }
+
+        function renderSummaryHtml(summary) {
+            const net = summary.income - summary.expense;
+            return `
+                <div class="summary-grid">
+                    <div class="metric-card">
+                        <small>總收入</small>
+                        <strong class="text-income">${formatMoney(summary.income)}</strong>
+                    </div>
+                    <div class="metric-card">
+                        <small>總支出</small>
+                        <strong class="text-expense">${formatMoney(summary.expense)}</strong>
+                    </div>
+                    <div class="metric-card">
+                        <small>淨利</small>
+                        <strong>${formatMoney(net)}</strong>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 渲染條目 HTML
+        function renderEntryItemHtml(r) {
+            const isIncome = r.type === 'income';
+            const itemsTags = (r.items || []).map(i => `<span class="tag">${escapeHtml(i)}</span>`).join('');
+            
+            return `
+                <div class="entry-item">
+                    <div class="entry-info">
+                        <div class="entry-tags">${itemsTags}</div>
+                        <div class="entry-sub">${escapeHtml(r.date)} · ${escapeHtml(r.payment || '現金')}${r.note ? ' · ' + escapeHtml(r.note) : ''}</div>
+                    </div>
+                    <div class="entry-amount ${isIncome ? 'text-income' : 'text-expense'}">
+                        ${isIncome ? '+' : '−'}${formatMoney(r.amount)}
+                    </div>
+                    <div class="entry-actions">
+                        <button class="action-btn" onclick="openModalForEdit('${r.id}')" title="編輯">✎</button>
+                        <button class="action-btn" onclick="deleteRecord('${r.id}')" title="刪除">🗑️</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 頁面 1：月曆渲染
+        function renderCalendar() {
+            const [y, m] = viewMonth.split('-').map(Number);
+            const firstDayIndex = new Date(y, m - 1, 1).getDay();
+            const totalDays = new Date(y, m, 0).getDate();
+
+            $('monthTitle').textContent = `${y} 年 ${m} 月`;
+
+            let daysHtml = Array(firstDayIndex).fill('<span></span>').join('');
+
+            for (let d = 1; d <= totalDays; d++) {
+                const dateStr = `${viewMonth}-${String(d).padStart(2, '0')}`;
+                const hasRecord = records.some(r => r.date === dateStr);
+                const isSelected = dateStr === selectedDate;
+                const isToday = dateStr === getTodayStr();
+
+                daysHtml += `
+                    <button class="day-cell ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}" 
+                            data-date="${dateStr}">
+                        ${d}
+                        ${hasRecord ? '<i class="dot"></i>' : ''}
+                    </button>
+                `;
+            }
+
+            $('calendarDays').innerHTML = daysHtml;
+            $('selectedDateTitle').textContent = selectedDate.replaceAll('-', ' / ') + ' 收支明細';
+
+            // 渲染選取日期的條目
+            const dayRecords = records
+                .filter(r => r.date === selectedDate)
+                .sort((a, b) => (b.created || '').localeCompare(a.created || ''));
+
+            $('dayEntries').innerHTML = dayRecords.length
+                ? dayRecords.map(renderEntryItemHtml).join('')
+                : '<div class="empty-state">當日尚無收支紀錄</div>';
+
+            $('daySummary').innerHTML = renderSummaryHtml(calculateSummary(dayRecords));
+        }
+
+        // 頁面 2：總紀錄渲染
+        function renderRecordsPage() {
+            const monthVal = $('filterMonth').value;
+            const typeVal = $('filterType').value;
+            const searchVal = $('filterSearch').value.trim().toLowerCase();
+
+            let filtered = records.filter(r => {
+                if (monthVal && getMonthStr(r.date) !== monthVal) return false;
+                if (typeVal !== 'all' && r.type !== typeVal) return false;
+                if (searchVal) {
+                    const matchItem = (r.items || []).some(i => i.toLowerCase().includes(searchVal));
+                    const matchNote = (r.note || '').toLowerCase().includes(searchVal);
+                    const matchPayment = (r.payment || '').toLowerCase().includes(searchVal);
+                    if (!matchItem && !matchNote && !matchPayment) return false;
+                }
+                return true;
+            });
+
+            filtered.sort((a, b) => b.date.localeCompare(a.date) || (b.created || '').localeCompare(a.created || ''));
+
+            $('recordsSummary').innerHTML = renderSummaryHtml(calculateSummary(filtered));
+            $('allEntriesList').innerHTML = filtered.length
+                ? filtered.map(renderEntryItemHtml).join('')
+                : '<div class="empty-state">無符合條件的紀錄</div>';
+        }
+
+        // 頁面 3：報表渲染
+        function renderReportsPage() {
+            const monthVal = $('reportMonth').value;
+            const monthRecords = records.filter(r => getMonthStr(r.date) === monthVal);
+            const summary = calculateSummary(monthRecords);
+            const maxVal = Math.max(1, summary.income, summary.expense);
+
+            $('reportSummary').innerHTML = renderSummaryHtml(summary);
+
+            // 收支比例圖
+            $('reportBarRatio').innerHTML = `
+                <div class="bar-item">
+                    <span>總收入</span>
+                    <div class="bar-track"><div class="bar-fill" style="width: ${(summary.income / maxVal) * 100}%"></div></div>
+                    <span style="text-align: right">${formatMoney(summary.income)}</span>
+                </div>
+                <div class="bar-item">
+                    <span>總支出</span>
+                    <div class="bar-track"><div class="bar-fill expense-fill" style="width: ${(summary.expense / maxVal) * 100}%"></div></div>
+                    <span style="text-align: right">${formatMoney(summary.expense)}</span>
+                </div>
+            `;
+
+            // 分類排行榜
+            renderCategoryRank(monthRecords, 'income', $('incomeCategoryBars'));
+            renderCategoryRank(monthRecords, 'expense', $('expenseCategoryBars'));
+
+            // 近 6 個月趨勢圖
+            renderTrendChart(monthVal);
+        }
+
+        function renderCategoryRank(dataList, type, container) {
+            const filtered = dataList.filter(r => r.type === type);
+            const catMap = {};
+
+            filtered.forEach(r => {
+                (r.items || []).forEach(item => {
+                    catMap[item] = (catMap[item] || 0) + Number(r.amount);
+                });
+            });
+
+            const sorted = Object.entries(catMap).sort((a, b) => b[1] - a[1]);
+            const maxVal = Math.max(1, ...sorted.map(s => s[1]));
+
+            container.innerHTML = sorted.length ? sorted.map(([name, amt]) => `
+                <div class="bar-item">
+                    <span>${escapeHtml(name)}</span>
+                    <div class="bar-track">
+                        <div class="bar-fill ${type === 'expense' ? 'expense-fill' : ''}" style="width: ${(amt / maxVal) * 100}%"></div>
+                    </div>
+                    <span style="text-align: right">${formatMoney(amt)}</span>
+                </div>
+            `).join('') : '<div class="empty-state">暫無資料</div>';
+        }
+
+        function renderTrendChart(currentMonthStr) {
+            const [y, m] = currentMonthStr.split('-').map(Number);
+            const months = Array.from({ length: 6 }, (_, i) => {
+                const d = new Date(y, m - 1 - (5 - i), 1);
+                return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+            });
+
+            const monthData = months.map(mStr => {
+                const subRecords = records.filter(r => getMonthStr(r.date) === mStr);
+                return { month: mStr, ...calculateSummary(subRecords) };
+            });
+
+            const maxVal = Math.max(1, ...monthData.flatMap(d => [d.income, d.expense]));
+
+            $('trendBars').innerHTML = monthData.map(d => `
+                <div class="bar-item">
+                    <span>${d.month.slice(2)}</span>
+                    <div>
+                        <div class="bar-track" style="margin-bottom: 3px;">
+                            <div class="bar-fill" style="width: ${(d.income / maxVal) * 100}%"></div>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill expense-fill" style="width: ${(d.expense / maxVal) * 100}%"></div>
+                        </div>
+                    </div>
+                    <span style="text-align: right">${formatMoney(d.income - d.expense)}</span>
+                </div>
+            `).join('') + '<p style="font-size:10px; color:var(--text-muted); margin-top:8px; text-align:right;">深色：收入｜淺色：支出｜右側：淨利</p>';
+        }
+
+        // 全域 Render
+        function renderApp() {
+            renderCalendar();
+            renderRecordsPage();
+            renderReportsPage();
+        }
+
+        // 切換頁面
+        function switchPage(pageKey) {
+            activePage = pageKey;
+            document.querySelectorAll('.toolbar-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.page === pageKey);
+            });
+
+            ['calendar', 'records', 'reports'].forEach(pk => {
+                $(`page-${pk}`).classList.toggle('hidden', pk !== pageKey);
+            });
+
+            renderApp();
+        }
+
+        // Modal 操作邏輯
+        function openModal(editId = null) {
+            $('entryForm').reset();
+            $('editEntryId').value = editId || '';
+
+            // 清空 Checkbox 狀態
+            document.querySelectorAll('#incomeChipsContainer input').forEach(cb => cb.checked = false);
+
+            if (editId) {
+                const r = records.find(x => x.id === editId);
+                if (r) {
+                    $('formModalTitle').textContent = '編輯收支紀錄';
+                    $('entryType').value = r.type;
+                    $('entryDate').value = r.date;
+                    $('entryAmount').value = r.amount;
+                    $('entryPayment').value = r.payment || '現金';
+                    $('entryNote').value = r.note || '';
+
+                    toggleEntryTypeUI(r.type);
+
+                    if (r.type === 'income') {
+                        (r.items || []).forEach(item => {
+                            const cb = Array.from(document.querySelectorAll('#incomeChipsContainer input'))
+                                            .find(el => el.value === item);
+                            if (cb) cb.checked = true;
+                        });
+                    } else {
+                        if (r.items && r.items[0]) $('expenseCategorySelect').value = r.items[0];
+                    }
+                }
+            } else {
+                $('formModalTitle').textContent = '新增收支紀錄';
+                $('entryType').value = 'income';
+                $('entryDate').value = selectedDate;
+                toggleEntryTypeUI('income');
+            }
+
+            $('entryModal').classList.add('active');
+        }
+
+        function closeModal() {
+            $('entryModal').classList.remove('active');
+        }
+
+        function toggleEntryTypeUI(type) {
+            if (type === 'income') {
+                $('incomeServicesGroup').classList.remove('hidden');
+                $('expenseCategoryGroup').classList.add('hidden');
+            } else {
+                $('incomeServicesGroup').classList.add('hidden');
+                $('expenseCategoryGroup').classList.remove('hidden');
+            }
+        }
+
+        // 全域暴露編輯與刪除給動態 HTML
+        window.openModalForEdit = id => openModal(id);
+
+        window.deleteRecord = id => {
+            const r = records.find(x => x.id === id);
+            if (r && confirm(`確定要刪除「${(r.items || []).join(' + ')}」${formatMoney(r.amount)} 的紀錄嗎？`)) {
+                records = records.filter(x => x.id !== id);
+                saveRecords();
+                renderApp();
+            }
+        };
+
+        // 事件綁定
+        document.querySelectorAll('.toolbar-btn').forEach(btn => {
+            btn.onclick = () => switchPage(btn.dataset.page);
+        });
+
+        $('calendarDays').onclick = e => {
+            const btn = e.target.closest('[data-date]');
+            if (btn) {
+                selectedDate = btn.dataset.date;
+                renderCalendar();
+            }
+        };
+
+        $('btnPrevMonth').onclick = () => shiftMonth(-1);
+        $('btnNextMonth').onclick = () => shiftMonth(1);
+
+        function shiftMonth(delta) {
+            const [y, m] = viewMonth.split('-').map(Number);
+            const d = new Date(y, m - 1 + delta, 1);
+            viewMonth = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+            selectedDate = `${viewMonth}-01`;
+            renderCalendar();
+        }
+
+        $('btnAddCalendar').onclick = () => openModal();
+        $('btnAddRecords').onclick = () => openModal();
+        $('btnCloseModal').onclick = closeModal;
+        $('btnCancelModal').onclick = closeModal;
+
+        $('entryType').onchange = e => toggleEntryTypeUI(e.target.value);
+
+        // 表單提交
+        $('entryForm').onsubmit = e => {
+            e.preventDefault();
+
+            const type = $('entryType').value;
+            const amount = Number($('amount' in e.target ? e.target.amount.value : $('entryAmount').value));
+
+            if (!Number.isSafeInteger(amount) || amount < 0) {
+                alert('請輸入有效的整數金額');
+                return;
+            }
+
+            let selectedItems = [];
+            if (type === 'income') {
+                selectedItems = Array.from(document.querySelectorAll('#incomeChipsContainer input:checked'))
+                                     .map(cb => cb.value);
+                if (selectedItems.length === 0) {
+                    alert('請至少勾選一項美甲服務項目');
+                    return;
+                }
+            } else {
+                selectedItems = [$('expenseCategorySelect').value];
+            }
+
+            const editId = $('editEntryId').value;
+            const recordObj = {
+                id: editId || (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random()),
+                date: $('entryDate').value,
+                type,
+                items: selectedItems,
+                amount,
+                payment: $('entryPayment').value,
+                note: $('entryNote').value.trim(),
+                created: records.find(x => x.id === editId)?.created || new Date().toISOString()
+            };
+
+            if (editId) {
+                records = records.map(x => x.id === editId ? recordObj : x);
+            } else {
+                records.push(recordObj);
+            }
+
+            if (saveRecords()) {
+                selectedDate = recordObj.date;
+                viewMonth = getMonthStr(selectedDate);
+                closeModal();
+                renderApp();
+            }
+        };
+
+        // 篩選監聽
+        ['filterMonth', 'filterType', 'filterSearch'].forEach(id => {
+            $(id).addEventListener('input', renderRecordsPage);
+        });
+
+        $('reportMonth').addEventListener('input', renderReportsPage);
+
+        // JSON 備份與匯入
+        $('btnExportJSON').onclick = () => {
+            const dataStr = JSON.stringify({
+                app: 'SEQWHITE.STUDIO',
+                version: 2,
+                exportedAt: new Date().toISOString(),
+                records
+            }, null, 2);
+
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `SEQWHITE_Backup_${getTodayStr()}.json`;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        };
+
+        $('btnImportJSON').onclick = () => $('importFileInput').click();
+
+        $('importFileInput').onchange = async e => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                const content = await file.text();
+                const json = JSON.parse(content);
+
+                if (json.app !== 'SEQWHITE.STUDIO' || !Array.isArray(json.records) || !json.records.every(isValidRecord)) {
+                    throw new Error('檔案格式不相容或已損壞');
+                }
+
+                if (confirm(`確定要匯入 ${json.records.length} 筆紀錄並與現有資料合併嗎？`)) {
+                    const recordMap = new Map(records.map(r => [r.id, r]));
+                    json.records.forEach(r => recordMap.set(r.id, r));
+                    records = Array.from(recordMap.values());
+
+                    saveRecords();
+                    renderApp();
+                    alert('匯入備份成功！');
+                }
+            } catch (err) {
+                alert('無法匯入檔案：' + err.message);
+            } finally {
+                e.target.value = '';
+            }
+        };
+
+        // 初始化預設值
+        $('filterMonth').value = viewMonth;
+        $('reportMonth').value = viewMonth;
+        initFormOptions();
+        loadRecords();
+        renderApp();
+    })();
+    </script>
+</body>
+</html>
